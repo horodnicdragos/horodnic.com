@@ -1,8 +1,9 @@
-import Tick from '../tick'
-import s from '../../utils/s'
 import linkState from 'linkstate';
 import { Component } from 'preact';
 
+import Tick from '../tick'
+import s from '../../utils/s'
+import { ERRORS } from './formConstants'
 
 const Label = s('label')`db fw6 lh-copy f6`
 const Input = s('input')`pa3 w-100 ba b--black-40 bg-transparent br2-ns lh-copy
@@ -34,13 +35,14 @@ const SendBtn = ({ onClick, sent, ready }) => (
 const Error = ({ msg }) => msg ? (<div class="f6 red mv1">{msg}</div>) : null
 
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
 class Form extends Component {
     constructor(props) {
         super(props)
         this.state = {
             values: {},
             errors: {},
-            error: '',
+            submitError: '',
             sent: false,
             ready: true
         }
@@ -49,10 +51,10 @@ class Form extends Component {
         const { values } = this.state
         const value = values[x.id]
         const { required, validators } = x
-        if (required && !value) return 'Required';
+        if (required && !value) return ERRORS.REQUIRED;
         if (!validators) return
         if (validators.includes('email') && !emailRegex.test(value))
-            return 'Invalid email'
+            return ERRORS.INVALID_EMAIL
     }
     onFieldBlur = x => e => {
         const { errors } = this.state
@@ -68,29 +70,32 @@ class Form extends Component {
     }
     send = cb => e => {
         e.preventDefault()
-        const errorCount = Object.keys(this.state.errors).length
-        if (errorCount) return
+        const { errors, values } = this.state
+        if (Object.keys(errors).length) return
         const { fields } = this.props
         const validationErrors = fields.map(this.validateField)
 
         if (validationErrors.some(x => x)) {
-            const errors = validationErrors.reduce((a, x, i) => {
+            const newErrors = validationErrors.reduce((a, x, i) => {
                 if (x) a[fields[i].id] = x
                 return a
             }, {})
-            this.setState({ errors })
+            this.setState({ errors: newErrors })
             return
         }
-        cb(this.state).then(() => {
-            this.setState({ sent: true, ready: false, values: {}, errors: {}, error: '' })
+        cb(values).then(() => {
+            this.setState({
+                sent: true, ready: false, values: {}, errors: {},
+                submitError: ''
+            })
         }).catch(e => {
-            this.setState({ error: "The form couldn't be submitted. Please try again!" })
+            this.setState({ submitError: ERRORS.DEFAULT })
         })
 
     }
     render(props, state) {
         const { fields, onSubmit } = props
-        const { sent, ready, errors, error, values } = state
+        const { sent, ready, errors, submitError, values } = state
         return (
             <form class="measure center">
                 <div class="ba b--transparent ph0 mh0">
@@ -106,7 +111,7 @@ class Form extends Component {
                         </div>
                     ))}
                 </div>
-                <Error msg={error} />
+                <Error msg={submitError} />
                 <SendBtn onClick={this.send(onSubmit)} sent={sent}
                     ready={ready} />
             </form>)
