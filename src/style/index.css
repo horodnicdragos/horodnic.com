@@ -1,3 +1,18 @@
+
+:focus > .focus__content {
+  outline: 1;
+}
+
+/* Removing the focus ring styles specifically for button in Firefox */
+:not(:-moz-focusring):focus > .focus__content {
+  box-shadow: none;
+}
+
+/* Removing default outline only after we've added our custom one */
+:focus,
+.focus__content:focus {
+  outline: none;
+}
 /*! TACHYONS v4.11.2 | http://tachyons.io */
 /*
  *
