@@ -4,7 +4,7 @@ import { Router } from 'preact-router';
 import Header from './header';
 
 // Code-splitting is automated for routes
-import Home from '../routes/home';
+import About from '../routes/about';
 import Resume from '../routes/resume';
 import Contact from '../routes/contact';
 
@@ -20,10 +20,10 @@ export default class App extends Component {
 
 	render() {
 		return (
-			<div id="app" class="h-100 avenir ph5-l">
+			<div id="app" class="h-100 avenir ph5-l black-80 avenir">
 				<Header/>
 				<Router class="border-box" onChange={this.handleRoute}>
-					<Home path="/" />
+					<About path="/" />
 					<Resume path="/resume"/>
 					<Contact path="/contact"/>
 				</Router>
