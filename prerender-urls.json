@@ -1,6 +1,8 @@
 [{
   "url": "/",
-  "title": "Homepage"
+  "title": "Dragos Horodnic"
 }, {
-  "url": "/route/random"
+  "url": "/resume"
+}, {
+  "url": "/contact"
 }]
