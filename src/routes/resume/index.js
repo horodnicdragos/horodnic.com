@@ -27,7 +27,7 @@ const resumeForm = [
 const Resume = () => (
 	<Page title="Resume">
 		<Paragraph>
-			Developing web and cross-platform mobile apps with passion for over 7 years, varying from small startups to very large enterprise codebases, primarily in the education and health industries. I am open to remote B2B contracts. My complete resume is only available to those that provide their e-mail address and the necesary project details below:
+			Developing web and cross-platform mobile apps with passion for over 7 years, varying from small startups to very large enterprise codebases, primarily in the education and health industries. I am open to remote B2B contracts. My complete resume is only available to those that provide their e-mail address and the necessary project details below:
 		</Paragraph>
 		<Form fields={resumeForm}
 			onSubmit={mailer({ subject: 'Resume Request' })} />
